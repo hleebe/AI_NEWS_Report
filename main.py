@@ -6,31 +6,23 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-# 1. 네이버 API 설정 (발급받은 ID와 Secret 입력)
-NAVER_CLIENT_ID = "GH0zAFNYACcititVUI8_"
-NAVER_CLIENT_SECRET = "MlEjVL7337"
+NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID")
+NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+SLACK_WEBHOOK_URL = os.environ.get("SLACK_WEBHOOK_URL")
 
-
-# 2. Gemini API 설정
-GEMINI_API_KEY = "AIzaSyAGcT42kXnschUJHjMjJ1OZ17xNQnlMjuQ"
-
-# 3. 슬랙 웹훅 URL (슬랙 앱 설정에서 발급)
-SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
-
-# 4. 검색 설정
+# 검색 설정
 SEARCH_KEYWORD = "하이닉스"
 MAX_NEWS_COUNT = 2
 
 
 def clean_html(text):
-    """뉴스 제목의 HTML 태그를 제거합니다."""
     text = re.sub(r'<.*?>', '', text)
     text = text.replace('&quot;', '"').replace('&amp;', '&').replace('&apos;', "'")
     return text
 
 
 def fetch_naver_news(keyword, max_items=5):
-    """1단계: 네이버 검색 API를 사용하여 최신 뉴스 수집"""
     print(f"🔍 네이버에서 '{keyword}' 관련 뉴스 수집 중...")
     
     url = "https://openapi.naver.com/v1/search/news.json"
@@ -66,7 +58,6 @@ def fetch_naver_news(keyword, max_items=5):
 
 
 def generate_ai_report(news_text, max_retries=3):
-    """2단계: Gemini AI를 사용하여 리포트 생성 (재시도 로직 포함)"""
     print("🧠 Gemini AI가 리포트를 생성하는 중...")
     
     client = genai.Client(api_key=GEMINI_API_KEY)
