@@ -11,7 +11,6 @@ NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 SLACK_WEBHOOK_URL = os.environ.get("SLACK_WEBHOOK_URL")
 
-# 검색 설정
 SEARCH_KEYWORD = "하이닉스"
 MAX_NEWS_COUNT = 3
 
@@ -53,15 +52,15 @@ def fetch_naver_news(keyword, max_items=5):
             
         return "\n\n".join(news_list)
     except Exception as e:
-        print(f"❌ 네이버 API 호출 오류: {e}")
+        print(f"네이버 API 호출 오류: {e}")
         return None
 
 
 def generate_ai_report(news_text, max_retries=3):
-    print("🧠 Gemini AI가 리포트를 생성하는 중...")
+    print("리포트 생성하는 중...")
     
     client = genai.Client(api_key=GEMINI_API_KEY)
-    prompt = f"""당신은 IT 산업 전문 애널리스트입니다. 
+    prompt = f"""당신은 전문 애널리스트입니다. 
 제공된 뉴스 기사들을 분석하여 바쁜 경영진이 3분 안에 읽을 수 있는 '일일 트렌드 리포트'를 작성해 주세요.
 
 [형식]
@@ -75,7 +74,6 @@ def generate_ai_report(news_text, max_retries=3):
 
     for attempt in range(max_retries):
         try:
-            # 모델명은 가장 안정적인 gemini-1.5-flash 또는 gemini-2.0-flash 사용
             response = client.models.generate_content(
                 model='gemini-flash-latest',
                 contents=prompt
@@ -84,36 +82,35 @@ def generate_ai_report(news_text, max_retries=3):
         except Exception as e:
             if "503" in str(e) or "UNAVAILABLE" in str(e):
                 wait_time = 2 ** attempt
-                print(f"⚠️ 서버 과부하로 {wait_time}초 후 재시도합니다... ({attempt+1}/{max_retries})")
+                print(f"서버 과부하로 {wait_time}초 후 재시도합니다... ({attempt+1}/{max_retries})")
                 time.sleep(wait_time)
             else:
-                print(f"❌ Gemini API 오류: {e}")
+                print(f"Gemini API 오류: {e}")
                 return None
     return None
 
 
 def send_to_slack(report_text):
-    """3단계: 완성된 리포트를 슬랙 웹훅으로 전송"""
-    print("🚀 슬랙으로 리포트 전송 중...")
+    print("슬랙으로 리포트 전송 중...")
     payload = {"text": report_text}
     
     try:
         response = requests.post(SLACK_WEBHOOK_URL, json=payload)
         if response.status_code == 200:
-            print("✅ 슬랙 전송 성공!")
+            print("슬랙 전송 성공!")
         else:
-            print(f"❌ 슬랙 전송 실패: 상태 코드 {response.status_code}")
+            print(f"슬랙 전송 실패: 상태 코드 {response.status_code}")
     except Exception as e:
-        print(f"❌ 슬랙 전송 중 오류 발생: {e}")
+        print(f"슬랙 전송 중 오류 발생: {e}")
 
 
 def main():
-    print("=== 🤖 네이버-Gemini-슬랙 자동화 파이프라인 시작 ===")
+    print("=== 네이버-Gemini-슬랙 자동화 파이프라인 시작 ===")
     
     # 1. 뉴스 수집
     news_data = fetch_naver_news(SEARCH_KEYWORD, MAX_NEWS_COUNT)
     if not news_data:
-        print("⚠️ 수집된 뉴스가 없습니다.")
+        print("수집된 뉴스가 없습니다.")
         return
 
     # 2. AI 리포트 생성
@@ -122,9 +119,9 @@ def main():
     # 3. 결과 전송
     if report:
         send_to_slack(report)
-        print("=== 🎉 모든 작업이 성공적으로 완료되었습니다 ===")
+        print("=== 모든 작업이 성공적으로 완료되었습니다 ===")
     else:
-        print("⚠️ 리포트 생성 실패로 전송을 취소합니다.")
+        print("리포트 생성 실패로 전송을 취소합니다.")
 
 
 if __name__ == "__main__":
