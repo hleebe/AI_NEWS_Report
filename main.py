@@ -1,7 +1,8 @@
 import requests
 import smtplib
-from google import genai
 import re
+import os
+from google import genai
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
