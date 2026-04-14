@@ -1,0 +1,34 @@
+name: Daily AI News Report
+
+# 시간설정
+on:
+  schedule:
+    # UTC기준 시간
+    - cron: '0 0 * * *'
+  workflow_dispatch: 
+
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest 
+    
+    steps:
+      - name: 1. 내 저장소 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: 2. 파이썬 환경 세팅하기
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 3. 필요한 라이브러리 설치하기 (requirements.txt)
+        run: pip install -r requirements.txt
+
+      - name: 4. 파이썬 코드 실행하기!
+        env:
+          
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python main.py
