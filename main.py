@@ -13,7 +13,7 @@ SLACK_WEBHOOK_URL = os.environ.get("SLACK_WEBHOOK_URL")
 
 # 검색 설정
 SEARCH_KEYWORD = "하이닉스"
-MAX_NEWS_COUNT = 2
+MAX_NEWS_COUNT = 3
 
 
 def clean_html(text):
