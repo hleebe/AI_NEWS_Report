@@ -1,10 +1,8 @@
 import requests
-import smtplib
 import re
 import os
 from google import genai
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+
 
 
 NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID")
