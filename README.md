@@ -6,7 +6,7 @@
 - **Data Sourcing**: 네이버 검색 API를 활용한 실시간 뉴스 데이터 수집
 - **AI Processing**: Google Gemini 최신 Flash 모델을 활용한 3줄 핵심 요약 및 비즈니스 인사이트 추출
 - **Communication Automation**: 슬랙 웹훅(Webhook)을 통한 즉각적인 리포트 발행
-- **Serverless Scheduling**: GitHub Actions를 활용하여 매일 아침 9시(KST) 완전 자동 실행
+- **Serverless Scheduling**: GitHub Actions를 활용하여 매일 아침 11시30분(KST) 완전 자동 실행
 
 ## Tech Stack
 - **Language**: Python 3.10
